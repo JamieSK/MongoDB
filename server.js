@@ -2,6 +2,7 @@ let express = require('express');
 let parser = require('body-parser');
 let app = express();
 let MongoClient = require('mongodb').MongoClient;
+let ObjectId = require('mongodb').ObjectID;
 
 app.use(parser.json());
 app.use(parser.urlencoded({extended: true}));
@@ -30,6 +31,13 @@ app.post('/books', (req, res) => {
     if (err) return console.log(err);
     res.redirect('/books');
   });
+});
+
+app.post('/books/update/:id', (req, res) => {
+  // let id = new ObjectId(req.params.id);
+  req.body._id = new ObjectId(req.body._id);
+  db.collection('books').save(req.body, {w: 1});
+  res.redirect('/books');
 });
 
 app.post('/books/deleteall', (req, res) => {
